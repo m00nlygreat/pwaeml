@@ -1,0 +1,27 @@
+{
+  "name": "퐤믈",
+  "short_name": "pwaeml",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#141817",
+  "theme_color": "#1c2526",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./index.html",
+      "accept": {
+        "message/rfc822": [".eml"],
+        "text/plain": [".eml"],
+        "application/octet-stream": [".eml"]
+      }
+    }
+  ]
+}

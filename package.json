@@ -1,0 +1,22 @@
+{
+  "name": "pwaeml",
+  "version": "0.1.0",
+  "description": "Offline-first PWA for viewing .eml messages and detaching attachments.",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5174",
+    "build": "vite build",
+    "check:samples": "node scripts/check-samples.mjs",
+    "preview": "vite preview --host 127.0.0.1 --port 4174"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "fflate": "^0.8.3",
+    "lucide": "^1.16.0",
+    "postal-mime": "^2.7.4",
+    "vite": "^8.0.13"
+  }
+}

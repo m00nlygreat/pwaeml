@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f8f7" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <title>퐤믈</title>
+    <script type="module" crossorigin src="./assets/index-5eQeZl_f.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BBRtPFWC.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <i data-lucide="mail-open"></i>
+          </span>
+          <div class="brand-copy">
+            <h1>퐤믈</h1>
+            <p id="fileStatus">파일 없음</p>
+          </div>
+        </div>
+        <div class="toolbar" aria-label="파일 작업">
+          <button id="openButton" class="tool-button primary" type="button">
+            <i data-lucide="folder-open" aria-hidden="true"></i>
+            <span>EML 열기</span>
+          </button>
+          <button id="zipButton" class="tool-button" type="button" disabled>
+            <i data-lucide="archive" aria-hidden="true"></i>
+            <span>첨부 ZIP</span>
+          </button>
+          <button id="strippedButton" class="tool-button" type="button" disabled>
+            <i data-lucide="file-down" aria-hidden="true"></i>
+            <span>첨부 제거 EML</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="sidebar" aria-label="메일 정보와 첨부파일">
+          <section class="panel message-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>메일 정보</h2>
+                <p>파싱된 헤더</p>
+              </div>
+            </div>
+            <dl class="meta-list" id="messageMeta">
+              <div>
+                <dt>상태</dt>
+                <dd>대기 중</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel attachments-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>첨부파일</h2>
+                <p>분리 저장</p>
+              </div>
+              <span id="attachmentCount" class="count-pill">0</span>
+            </div>
+            <label class="check-row">
+              <input id="includeInlineToggle" type="checkbox" />
+              <span>본문 inline 포함</span>
+            </label>
+            <div id="attachmentsList" class="attachments-list">
+              <p class="empty-note">첨부 없음</p>
+            </div>
+          </section>
+        </aside>
+
+        <section class="reader">
+          <section class="subject-strip">
+            <div>
+              <span class="eyebrow">읽기</span>
+              <h2 id="subjectText">EML 파일을 열어 주세요</h2>
+              <p class="subject-help">메일 본문, 텍스트, 원본 소스를 로컬에서 확인합니다.</p>
+            </div>
+            <label class="check-row remote-toggle">
+              <input id="allowRemoteToggle" type="checkbox" />
+              <span>원격 이미지 허용</span>
+            </label>
+          </section>
+
+          <nav class="tabs" aria-label="보기 방식">
+            <button class="tab-button active" type="button" data-tab="html">
+              <i data-lucide="eye" aria-hidden="true"></i>
+              <span>HTML</span>
+            </button>
+            <button class="tab-button" type="button" data-tab="text">
+              <i data-lucide="type" aria-hidden="true"></i>
+              <span>텍스트</span>
+            </button>
+            <button class="tab-button" type="button" data-tab="source">
+              <i data-lucide="code-2" aria-hidden="true"></i>
+              <span>원본</span>
+            </button>
+          </nav>
+
+          <section class="preview-shell">
+            <div id="emptyState" class="empty-state">
+              <div class="empty-card">
+                <i data-lucide="mail-open" aria-hidden="true"></i>
+                <div>
+                  <strong>EML 파일을 열어 주세요</strong>
+                  <p>파일은 브라우저 안에서만 처리됩니다. 첨부파일 ZIP 저장과 첨부 제거본 생성을 지원합니다.</p>
+                </div>
+                <button id="emptyOpenButton" class="tool-button primary" type="button">
+                  <i data-lucide="folder-open" aria-hidden="true"></i>
+                  <span>파일 선택</span>
+                </button>
+              </div>
+            </div>
+            <iframe id="htmlPreview" class="html-preview" title="메일 HTML 미리보기" sandbox=""></iframe>
+            <pre id="textPreview" class="text-preview" hidden></pre>
+            <pre id="sourcePreview" class="text-preview source-preview" hidden></pre>
+          </section>
+        </section>
+      </section>
+
+      <div class="drop-overlay" aria-hidden="true">
+        <div>
+          <i data-lucide="file-up" aria-hidden="true"></i>
+          <span>놓아서 열기</span>
+        </div>
+      </div>
+
+      <input id="fileInput" class="hidden-input" type="file" accept=".eml,message/rfc822" />
+    </main>
+  </body>
+</html>
