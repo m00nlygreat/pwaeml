@@ -6,16 +6,24 @@
     <meta name="theme-color" content="#f8f8f7" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <title>퐤믈</title>
-    <script type="module" crossorigin src="./assets/index-5eQeZl_f.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BBRtPFWC.css">
+    <script type="module" crossorigin src="./assets/index-CagQTh2o.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C6OPw_l8.css">
   </head>
   <body>
-    <main class="app-shell">
+    <main class="app-shell sidebar-collapsed">
       <header class="topbar">
         <div class="brand">
-          <span class="brand-mark" aria-hidden="true">
-            <i data-lucide="mail-open"></i>
-          </span>
+          <button
+            id="sidePanelButton"
+            class="icon-button side-panel-toggle"
+            type="button"
+            aria-controls="sidePanel"
+            aria-expanded="false"
+            aria-label="사이드 패널 펼치기"
+            title="사이드 패널 펼치기"
+          >
+            <i data-lucide="panel-left-open" aria-hidden="true"></i>
+          </button>
           <div class="brand-copy">
             <h1>퐤믈</h1>
             <p id="fileStatus">파일 없음</p>
@@ -26,19 +34,35 @@
             <i data-lucide="folder-open" aria-hidden="true"></i>
             <span>EML 열기</span>
           </button>
-          <button id="zipButton" class="tool-button" type="button" disabled>
-            <i data-lucide="archive" aria-hidden="true"></i>
-            <span>첨부 ZIP</span>
-          </button>
-          <button id="strippedButton" class="tool-button" type="button" disabled>
-            <i data-lucide="file-down" aria-hidden="true"></i>
-            <span>첨부 제거 EML</span>
-          </button>
+          <div class="download-dropdown">
+            <button
+              id="downloadMenuButton"
+              class="tool-button"
+              type="button"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              disabled
+            >
+              <i data-lucide="download" aria-hidden="true"></i>
+              <span>내보내기</span>
+              <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
+            <div id="downloadMenu" class="download-menu" role="menu" hidden>
+              <button id="zipButton" class="menu-button" type="button" role="menuitem" disabled>
+                <i data-lucide="archive" aria-hidden="true"></i>
+                <span>첨부 ZIP 다운로드</span>
+              </button>
+              <button id="strippedButton" class="menu-button" type="button" role="menuitem" disabled>
+                <i data-lucide="file-down" aria-hidden="true"></i>
+                <span>첨부 제거 EML 다운로드</span>
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
       <section class="workspace">
-        <aside class="sidebar" aria-label="메일 정보와 첨부파일">
+        <aside id="sidePanel" class="sidebar" aria-label="메일 정보와 첨부파일">
           <section class="panel message-panel">
             <div class="panel-heading">
               <div>

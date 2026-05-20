@@ -145,9 +145,15 @@ input:focus-visible {
   gap: 8px;
 }
 
+.download-dropdown {
+  position: relative;
+  flex: 0 0 auto;
+}
+
 .tool-button,
 .tab-button,
-.icon-button {
+.icon-button,
+.menu-button {
   appearance: none;
   border: 1px solid var(--border);
   border-radius: 7px;
@@ -175,6 +181,7 @@ input:focus-visible {
 
 .tool-button svg,
 .tab-button svg,
+.menu-button svg,
 .drop-overlay svg {
   width: 16px;
   height: 16px;
@@ -183,13 +190,15 @@ input:focus-visible {
 
 .tool-button:hover,
 .tab-button:hover,
-.icon-button:hover {
+.icon-button:hover,
+.menu-button:hover {
   background: var(--surface-hover);
   border-color: color-mix(in oklch, var(--muted) 24%, var(--border));
 }
 
 .tool-button:disabled,
-.tab-button:disabled {
+.tab-button:disabled,
+.menu-button:disabled {
   cursor: not-allowed;
   opacity: 0.44;
 }
@@ -206,10 +215,49 @@ input:focus-visible {
   background: oklch(12% 0.012 250);
 }
 
+.download-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 15;
+  display: grid;
+  gap: 4px;
+  min-width: 220px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px;
+  background: var(--surface);
+  box-shadow: var(--shadow-popover);
+}
+
+.download-menu[hidden] {
+  display: none;
+}
+
+.menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  color: var(--fg);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 520;
+  text-align: left;
+  white-space: nowrap;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 314px minmax(0, 1fr);
   min-height: 0;
+}
+
+.sidebar-collapsed .workspace {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .sidebar {
@@ -221,6 +269,10 @@ input:focus-visible {
   padding: 16px;
   background: color-mix(in oklch, var(--surface-muted) 74%, var(--bg));
   overflow: auto;
+}
+
+.side-panel-toggle {
+  flex: 0 0 34px;
 }
 
 .panel {

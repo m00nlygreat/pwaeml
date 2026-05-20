@@ -2,6 +2,7 @@ import PostalMime from 'postal-mime';
 import { zipSync } from 'fflate';
 import {
   Archive,
+  ChevronDown,
   Code2,
   Download,
   Eye,
@@ -9,6 +10,8 @@ import {
   FileUp,
   FolderOpen,
   MailOpen,
+  PanelLeftClose,
+  PanelLeftOpen,
   Paperclip,
   Type,
   createIcons,
@@ -18,6 +21,7 @@ import { safeFileName, stripAttachmentsFromEml, uniqueFileName } from './mime-de
 
 const iconSet = {
   Archive,
+  ChevronDown,
   Code2,
   Download,
   Eye,
@@ -25,6 +29,8 @@ const iconSet = {
   FileUp,
   FolderOpen,
   MailOpen,
+  PanelLeftClose,
+  PanelLeftOpen,
   Paperclip,
   Type,
 };
@@ -42,6 +48,10 @@ const filePickerTypes = [
 
 const elements = {
   app: document.querySelector('.app-shell'),
+  sidePanelButton: document.querySelector('#sidePanelButton'),
+  sidePanel: document.querySelector('#sidePanel'),
+  downloadMenuButton: document.querySelector('#downloadMenuButton'),
+  downloadMenu: document.querySelector('#downloadMenu'),
   openButton: document.querySelector('#openButton'),
   emptyOpenButton: document.querySelector('#emptyOpenButton'),
   fileInput: document.querySelector('#fileInput'),
@@ -64,23 +74,35 @@ const elements = {
 const state = {
   current: null,
   activeTab: 'html',
+  isSidePanelCollapsed: true,
+  isDownloadMenuOpen: false,
   statusTimer: 0,
   objectUrls: [],
 };
 
 refreshIcons();
 bindEvents();
+updateSidePanel();
 renderEmptyState();
 
 function bindEvents() {
+  elements.sidePanelButton.addEventListener('click', toggleSidePanel);
+  elements.downloadMenuButton.addEventListener('click', toggleDownloadMenu);
   elements.openButton.addEventListener('click', openFile);
   elements.emptyOpenButton.addEventListener('click', openFile);
   elements.fileInput.addEventListener('change', onInputFileChange);
-  elements.zipButton.addEventListener('click', downloadAttachmentZip);
-  elements.strippedButton.addEventListener('click', downloadStrippedEml);
+  elements.zipButton.addEventListener('click', () => {
+    closeDownloadMenu();
+    downloadAttachmentZip();
+  });
+  elements.strippedButton.addEventListener('click', () => {
+    closeDownloadMenu();
+    downloadStrippedEml();
+  });
   elements.includeInlineToggle.addEventListener('change', renderAttachments);
   elements.allowRemoteToggle.addEventListener('change', renderPreview);
   elements.attachmentsList.addEventListener('click', onAttachmentListClick);
+  document.addEventListener('click', onDocumentClick);
 
   for (const tab of elements.tabs) {
     tab.addEventListener('click', () => {
@@ -92,6 +114,12 @@ function bindEvents() {
   document.addEventListener(
     'keydown',
     (event) => {
+      if (event.key === 'Escape' && state.isDownloadMenuOpen) {
+        closeDownloadMenu();
+        elements.downloadMenuButton.focus();
+        return;
+      }
+
       const isOpenShortcut = (event.ctrlKey || event.metaKey) && event.code === 'KeyO';
       if (!isOpenShortcut) return;
 
@@ -104,6 +132,61 @@ function bindEvents() {
 
   bindDragAndDrop();
   bindLaunchQueue();
+}
+
+function toggleSidePanel() {
+  state.isSidePanelCollapsed = !state.isSidePanelCollapsed;
+  updateSidePanel();
+}
+
+function updateSidePanel() {
+  const isCollapsed = state.isSidePanelCollapsed;
+  const label = isCollapsed ? '사이드 패널 펼치기' : '사이드 패널 접기';
+  const icon = isCollapsed ? 'panel-left-open' : 'panel-left-close';
+
+  elements.app.classList.toggle('sidebar-collapsed', isCollapsed);
+  elements.sidePanel.hidden = isCollapsed;
+  elements.sidePanelButton.setAttribute('aria-expanded', String(!isCollapsed));
+  elements.sidePanelButton.setAttribute('aria-label', label);
+  elements.sidePanelButton.title = label;
+  elements.sidePanelButton.innerHTML = `<i data-lucide="${icon}" aria-hidden="true"></i>`;
+  refreshIcons(elements.sidePanelButton);
+}
+
+function toggleDownloadMenu() {
+  if (elements.downloadMenuButton.disabled) return;
+
+  state.isDownloadMenuOpen = !state.isDownloadMenuOpen;
+  updateDownloadMenu();
+}
+
+function closeDownloadMenu() {
+  if (!state.isDownloadMenuOpen) return;
+
+  state.isDownloadMenuOpen = false;
+  updateDownloadMenu();
+}
+
+function updateDownloadMenu() {
+  elements.downloadMenu.hidden = !state.isDownloadMenuOpen;
+  elements.downloadMenuButton.setAttribute('aria-expanded', String(state.isDownloadMenuOpen));
+}
+
+function onDocumentClick(event) {
+  if (!state.isDownloadMenuOpen) return;
+  if (elements.downloadMenu.contains(event.target) || elements.downloadMenuButton.contains(event.target)) return;
+
+  closeDownloadMenu();
+}
+
+function updateDownloadControls(isEnabled) {
+  elements.downloadMenuButton.disabled = !isEnabled;
+  elements.zipButton.disabled = !isEnabled;
+  elements.strippedButton.disabled = !isEnabled;
+
+  if (!isEnabled) {
+    closeDownloadMenu();
+  }
 }
 
 async function openFile() {
@@ -209,8 +292,7 @@ function renderEmptyState() {
   elements.messageMeta.innerHTML = renderMetaRows([['상태', '대기 중']]);
   elements.attachmentCount.textContent = '0';
   elements.attachmentsList.innerHTML = '<p class="empty-note">첨부 없음</p>';
-  elements.zipButton.disabled = true;
-  elements.strippedButton.disabled = true;
+  updateDownloadControls(false);
   elements.emptyState.hidden = false;
   elements.htmlPreview.hidden = true;
   elements.textPreview.hidden = true;
@@ -239,8 +321,7 @@ function renderAttachments() {
   const attachments = email.attachments || [];
   const detachable = getDetachableAttachments();
 
-  elements.zipButton.disabled = detachable.length === 0;
-  elements.strippedButton.disabled = detachable.length === 0;
+  updateDownloadControls(detachable.length > 0);
 
   if (!attachments.length) {
     elements.attachmentsList.innerHTML = '<p class="empty-note">첨부 없음</p>';

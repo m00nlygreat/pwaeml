@@ -1,0 +1,1 @@
+- Run `git status --short --branch` before work; if the remote is ahead, confirm and pull before proceeding.
